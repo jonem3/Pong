@@ -21,7 +21,7 @@ BAT_HEIGHT = 100
 BALL_WIDTH = 10
 BALL_HEIGHT = 10
 
-BAT_SPEED = 10
+BAT_SPEED = 15
 BALL_SPEED = 10
 
 MAIN_FONT = "comicsansms"
@@ -122,6 +122,33 @@ def paused():
         pygame.display.update()
         clock.tick(15)
 
+def display_win(player):
+    win = True
+    while win:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        game_display.fill(black)
+        largeText = pygame.font.SysFont(MAIN_FONT, 115)
+        TextSurf, TextRect = text_objects(player +" WINS", largeText)
+        TextRect.center = ((display_width / 2), (display_height / 2))
+        game_display.blit(TextSurf, TextRect)
+        button("Quit", 600, 600, 200, 100, red, bright_red, quitgame)
+        button("Restart", 100, 600, 200, 100, green, bright_green, game_loop)
+        pygame.display.update()
+        clock.tick(15)
+
+def win_screen(player1, player2):
+    if  player1 >= 11:
+        display_win("Player 1")
+
+    elif  player2 >= 11:
+        display_win("Player 2")
+
+    else:
+        pass
+
 
 
 def game_loop():
@@ -139,6 +166,7 @@ def game_loop():
     global ball_direction
     global ball_speed
     global pause
+    global BALL_SPEED
 
     ball_direction()
 
@@ -171,7 +199,6 @@ def game_loop():
                     bat_2_y_delta = 0
                 if event.key == pygame.K_w or event.key == pygame.K_s:
                     bat_1_y_delta = 0
-
 
         bat_2_y += bat_2_y_delta
         bat_1_y += bat_1_y_delta
@@ -224,7 +251,13 @@ def game_loop():
 
         scores(player1, player2)
 
+        pygame.draw.line(game_display, white, [(display_width/2)-2, display_height], [(display_width / 2)-2, 0], 5)
+
+        win_screen(player1, player2)
+
         pygame.display.update()
         clock.tick(30)
+        #Uncomment line below for increasing difficulty per frame
+        #BALL_SPEED += 0.01
 game_intro()
 game_loop()
